@@ -425,6 +425,18 @@ async function revealResult(){
   nowWrap.innerHTML='';withWrap.innerHTML='';
   (result.trajectoryNow||[]).forEach((t,i)=>{nowWrap.innerHTML+=`<div class="traj-item"><span class="traj-time">${TIMES[i]}</span><span class="tnow">${t}</span></div>`;});
   (result.trajectoryWith||[]).forEach((t,i)=>{withWrap.innerHTML+=`<div class="traj-item"><span class="traj-time">${TIMES[i]}</span><span class="twith">${t}</span></div>`;});
+  try {
+  await fetch('https://formspree.io/f/xojyrqzb', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      instagram: ig,
+      profil: result.profileName,
+      score: result.transformabilityScore,
+      urgence: result.urgenceLine
+    })
+  });
+} catch(e) {}
   if(result.transformabilityScore>=75)document.getElementById('booking-card').style.display='block';
   localStorage.setItem('ti_completed','1');
   show('screen-result');
