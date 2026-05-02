@@ -429,11 +429,15 @@ async function revealResult(){
   await fetch('https://formspree.io/f/xojyrqzb', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
+ body: JSON.stringify({
       instagram: ig,
       profil: result.profileName,
       score: result.transformabilityScore,
-      urgence: result.urgenceLine
+      urgence: result.urgenceLine,
+      situation: validAnswers[0] ? validAnswers[0].a : 'Non renseigné',
+      tentatives: validAnswers[2] ? validAnswers[2].a : 'Non renseigné',
+      vision: validAnswers[6] ? validAnswers[6].a : 'Non renseigné',
+      readiness: validAnswers[11] ? validAnswers[11].a : 'Non renseigné'
     })
   });
 } catch(e) {}
