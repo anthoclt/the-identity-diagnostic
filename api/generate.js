@@ -33,6 +33,7 @@ INSTRUCTIONS CRITIQUES :
 - Ton direct sans être brutal, comme quelqu'un qui a vu ce pattern des dizaines de fois et qui dit la vérité par respect.
 - Les échéances sont : 3 mois / 6 mois / 1 an, personnalisées à SA situation.
 - JAMAIS de phrases génériques que n'importe qui pourrait recevoir.
+- Réponds UNIQUEMENT en français. Aucun mot anglais dans le JSON. Tous les champs texte doivent être rédigés en français correct.
 
 ORDRE D'IMPACT : paragraphes (compréhension) puis dangerBlock (douleur émotionnelle, le pic) puis trajectoires (la sortie possible). Le dangerBlock est le moment le plus fort, juste avant qu'on lui montre les deux chemins.
 
