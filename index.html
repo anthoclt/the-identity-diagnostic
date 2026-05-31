@@ -1,463 +1,309 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Diagnostic Identitaire — THE IDENTITY</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#060606;--surface:#0e0e0e;--surface2:#141414;
-  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.1);
-  --accent:#f97316;--accent2:#fb923c;
-  --accent-dim:rgba(249,115,22,0.13);--accent-dim2:rgba(249,115,22,0.07);--accent-dim3:rgba(249,115,22,0.04);
-  --text:#efefef;--text2:#7a7a7a;--text3:#3a3a3a;--text4:#555;
-  --mono:'JetBrains Mono',monospace;--sans:'Syne',system-ui,sans-serif;
-  --green:#22c55e;--green-dim:rgba(34,197,94,0.09);--green-border:rgba(34,197,94,0.18);
-  --red:#ef4444;--red-dim:rgba(239,68,68,0.07);--red-border:rgba(239,68,68,0.15);
-  --r:10px;
-}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
-.wrap{max-width:580px;margin:0 auto;padding:1.75rem 1.25rem 4rem}
-.screen{display:none}
-.screen.active{display:block;animation:fadeUp 0.3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3)}
-.lbl-o{color:var(--accent);opacity:0.65}
-.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:1.5rem;border-bottom:0.5px solid var(--border);margin-bottom:2rem}
-.hdr-logo{font-family:var(--mono);font-size:11px;letter-spacing:3.5px;color:var(--text3)}
-.pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(249,115,22,0.5);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
-.prog-wrap{margin-bottom:2rem}
-.prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-.prog-track{height:1px;background:var(--border2);border-radius:1px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.55s cubic-bezier(0.4,0,0.2,1)}
-.phase-badge{display:inline-flex;align-items:center;gap:7px;background:var(--accent-dim3);border:0.5px solid rgba(249,115,22,0.13);border-radius:3px;padding:5px 11px;margin-bottom:1.6rem}
-.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;cursor:pointer;padding:0;margin-bottom:1.5rem;transition:color 0.15s}
-.back-btn:hover{color:var(--text2)}
-.q-text{font-size:19px;font-weight:500;line-height:1.5;margin-bottom:1.75rem;color:var(--text)}
-.opt{width:100%;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:13px 15px;text-align:left;font-size:13.5px;font-family:var(--sans);color:var(--text2);cursor:pointer;transition:all 0.14s ease;margin-bottom:7px;display:flex;align-items:flex-start;gap:11px;line-height:1.55}
-.opt:hover{border-color:var(--border2);color:var(--text);background:var(--surface2)}
-.opt.sel{border-color:var(--accent);background:var(--accent-dim);color:var(--text)}
-.opt-l{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:14px;padding-top:3px;flex-shrink:0}
-.opt.sel .opt-l{color:var(--accent)}
-.btn{background:var(--accent);color:#000;border:none;padding:13px 30px;font-size:11px;font-family:var(--mono);letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:opacity 0.15s;font-weight:500}
-.btn:hover{opacity:0.87}
-.btn:disabled{opacity:0.3;cursor:default}
-.btn-full{width:100%;padding:14px}
-.inp-lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px;display:block}
-input[type=text],input[type=password]{width:100%;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--r);padding:14px 15px;font-size:14px;font-family:var(--mono);color:var(--text);outline:none;transition:border-color 0.15s;-webkit-appearance:none;letter-spacing:1px}
-input:focus{border-color:var(--accent)}
-input::placeholder{color:var(--text3);letter-spacing:0}
-.boost-overlay{position:fixed;inset:0;background:rgba(6,6,6,0.92);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s}
-.boost-overlay.show{opacity:1;pointer-events:all}
-.boost-box{text-align:center;padding:2rem;max-width:320px}
-.boost-icon{font-size:32px;margin-bottom:1rem}
-.boost-title{font-size:18px;font-weight:600;margin-bottom:0.5rem;line-height:1.35}
-.boost-sub{font-size:13px;color:var(--text2);line-height:1.7}
-.boost-bar{height:2px;background:var(--border2);border-radius:1px;margin:1.25rem 0;overflow:hidden}
-.boost-bar-fill{height:100%;background:var(--accent);border-radius:1px;animation:boostFill 2s ease forwards}
-@keyframes boostFill{from{width:0}to{width:100%}}
-.analyze-wrap{text-align:center;padding:2.5rem 0}
-.score-circle{width:84px;height:84px;border:0.5px solid var(--border2);border-radius:50%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:border-color 0.5s,box-shadow 0.5s}
-.score-circle.lit{border-color:var(--accent);box-shadow:0 0 20px rgba(249,115,22,0.15)}
-.circle-pct{font-family:var(--mono);font-size:17px;font-weight:500}
-.circle-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:1px}
-.terminal{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem;text-align:left;margin:1.75rem 0}
-.t-line{display:flex;align-items:center;gap:10px;padding:5px 0;opacity:0;transition:opacity 0.4s}
-.t-line.vis{opacity:1}
-.t-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background 0.3s}
-.t-dot.done{background:var(--accent)}
-.t-txt{font-family:var(--mono);font-size:11px;color:var(--text3);transition:color 0.3s}
-.t-line.vis .t-txt{color:var(--text2)}
-.blur-wrap{position:relative;border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem}
-.blur-inner{padding:1.25rem;filter:blur(7px);user-select:none;pointer-events:none}
-.blur-ln{height:9px;background:var(--surface2);border-radius:3px;margin-bottom:9px}
-.blur-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,6,6,0.6)}
-.lock-badge{background:var(--surface);border:0.5px solid var(--border2);border-radius:6px;padding:9px 16px;text-align:center}
-.score-row{display:flex;gap:10px;margin-bottom:1.25rem}
-.score-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem;flex:1;text-align:center}
-.score-big{font-family:var(--mono);font-size:34px;font-weight:500;color:var(--accent);line-height:1}
-.score-unit{font-family:var(--mono);font-size:11px;color:var(--text3)}
-.profile-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem;flex:2}
-.res-body{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1.25rem}
-.res-p{font-size:13.5px;line-height:1.85;color:var(--text2)}
-.res-p+.res-p{margin-top:0.9rem}
-.res-vision{font-size:13.5px;line-height:1.85;color:var(--text);margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border)}
-.div{border:none;border-top:0.5px solid var(--border);margin:1.1rem 0}
-.urgence{font-family:var(--mono);font-size:11px;color:var(--text4);line-height:1.65;font-style:italic}
-.traj-ttl{font-family:var(--mono);font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);margin-bottom:0.9rem}
-.traj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
-.traj-col{border-radius:var(--r);padding:1.1rem}
-.traj-now{background:var(--red-dim);border:0.5px solid var(--red-border)}
-.traj-with{background:var(--green-dim);border:0.5px solid var(--green-border)}
-.traj-hdr{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.9rem}
-.traj-now .traj-hdr{color:var(--red);opacity:0.65}
-.traj-with .traj-hdr{color:var(--green);opacity:0.75}
-.traj-item{display:flex;gap:7px;margin-bottom:9px;align-items:flex-start}
-.traj-time{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:50px;padding-top:2px;flex-shrink:0}
-.tnow{font-size:11.5px;line-height:1.6;color:rgba(239,68,68,0.7)}
-.twith{font-size:11.5px;line-height:1.6;color:rgba(34,197,94,0.8)}
-.cta-card{background:var(--accent-dim3);border:0.5px solid rgba(249,115,22,0.18);border-radius:var(--r);padding:1.25rem;text-align:center;margin-bottom:1.25rem}
-.booking-card{background:var(--surface);border:0.5px solid var(--green-border);border-radius:var(--r);padding:1.25rem;text-align:center}
-.code-error{font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:1px;margin-top:8px;display:none}
-.code-error.show{display:block}
-@media(max-width:480px){
-  .traj-grid{grid-template-columns:1fr}
-  .q-text{font-size:17px}
-  .score-big{font-size:28px}
-}
+:root{--bg:#0a0a0a;--card:#141414;--card2:#121212;--bd:#242424;--bd2:#2a2a2a;--tx:#f5f5f5;--tx2:#a8a8a8;--tx3:#888;--tx4:#6a6a6a;--wht:#fff;--grn:#5cb874;--red:#e74c3c;--redtx:#d98a80;}
+body{background:var(--bg);font-family:'Syne',sans-serif;color:var(--tx);min-height:100vh;display:flex;align-items:flex-start;justify-content:center}
+.m{font-family:'JetBrains Mono',monospace}
+.wrap{width:100%;max-width:440px;min-height:100vh;padding:26px 22px 50px}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:0.5px solid var(--bd);margin-bottom:22px}
+.hl{color:#777;font-size:9px;letter-spacing:3.5px;font-family:'JetBrains Mono',monospace}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--wht)}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);display:block}
+.scr{display:none;animation:fade .4s ease}.scr.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+input,textarea{width:100%;background:var(--card2);border:0.5px solid var(--bd2);border-radius:8px;padding:13px 15px;font-size:14px;color:var(--tx);font-family:'JetBrains Mono',monospace;outline:none;transition:border .2s}
+input:focus,textarea:focus{border-color:#555}
+input::placeholder,textarea::placeholder{color:#555}
+textarea{font-family:'Syne',sans-serif;resize:none;line-height:1.6;min-height:96px}
+.btn{background:var(--wht);border:none;border-radius:8px;padding:15px;text-align:center;cursor:pointer;width:100%;transition:opacity .2s}
+.btn:active{opacity:.8}.btn span{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#000;font-weight:500}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.opt{background:var(--card);border:0.5px solid var(--bd);border-radius:9px;padding:14px;display:flex;gap:11px;align-items:flex-start;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.opt:active{transform:scale(.99)}.opt.sel{background:#1c1c1c;border:1px solid var(--wht)}
+.opt-l{font-family:'JetBrains Mono',monospace;color:#888;font-size:9px;padding-top:2px;flex-shrink:0}
+.opt.sel .opt-l{color:var(--wht)}
+.opt-t{color:var(--tx2);font-size:12.5px;line-height:1.5}.opt.sel .opt-t{color:var(--tx)}
+.prog-bar{height:2px;background:#222;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--wht);border-radius:2px;transition:width .4s ease;width:0}
+.card{background:var(--card);border:0.5px solid var(--bd);border-radius:10px;padding:13px}
+.spin{width:30px;height:30px;border:2px solid #2a2a2a;border-top-color:var(--wht);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--tx3);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:0;margin-bottom:14px}
+.back:active{color:var(--tx2)}
+.err{color:var(--red);font-size:10.5px;margin:-8px 2px 14px;display:none;font-family:'Syne',sans-serif}
 </style>
 </head>
 <body>
 <div class="wrap">
+<div class="hdr"><span class="hl">THE IDENTITY</span><div class="dot"></div></div>
 
-<div class="boost-overlay" id="boost-overlay">
-  <div class="boost-box">
-    <div class="boost-icon" id="boost-icon">⚡</div>
-    <h3 class="boost-title" id="boost-title"></h3>
-    <p class="boost-sub" id="boost-sub"></p>
-    <div class="boost-bar"><div class="boost-bar-fill"></div></div>
-  </div>
-</div>
-
-<!-- LOCK -->
-<div id="screen-lock" class="screen active">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <div style="text-align:center;padding:3rem 0">
-    <div style="font-size:36px;margin-bottom:1.25rem">🔒</div>
-    <p class="lbl lbl-o" style="margin-bottom:1rem">Accès exclusif — Avant-première</p>
-    <h1 style="font-size:22px;font-weight:600;line-height:1.35;margin-bottom:1rem">Diagnostic Identitaire<br>— Accès privé</h1>
-    <p style="font-size:13px;color:var(--text2);line-height:1.75;max-width:380px;margin:0 auto">Ce diagnostic a demandé plusieurs mois de développement. Tu y accèdes en avant-première — il sera payant dans les prochaines semaines.</p>
-    <div style="margin:1.75rem 0">
-      <label class="inp-lbl" for="code-input">Entre ton code d'accès</label>
-      <input type="password" id="code-input" placeholder="••••••••••" autocomplete="off"/>
-      <p class="code-error" id="code-error">Code incorrect. Vérifie avec Anthony.</p>
+<!-- GATE -->
+<div id="s-gate" class="scr on">
+  <div style="display:flex;justify-content:center;margin-bottom:16px;">
+    <div style="position:relative;">
+      <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:1.5px solid #3a3a3a;">
+        <img src="data:image/jpeg;base64,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" style="width:80px;height:80px;object-fit:cover;display:block;" alt="Anthony Celante">
+      </div>
+      <div style="position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;"><div style="width:7px;height:7px;border-radius:50%;background:var(--grn);"></div></div>
     </div>
-    <button class="btn btn-full" onclick="checkCode()">Accéder au diagnostic</button>
-    <p class="lbl" style="margin-top:1rem;font-size:9px">Code reçu en DM · @anthoclt</p>
   </div>
-</div>
-
-<!-- INTRO -->
-<div id="screen-intro" class="screen">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <p class="lbl lbl-o" style="margin-bottom:1.25rem">Diagnostic Identitaire v1.0</p>
-  <h1 style="font-size:27px;font-weight:700;line-height:1.25;margin-bottom:1rem">Découvre ce que tu pourrais <span style="color:var(--accent)">construire</span> — et ce qui t'en empêche encore.</h1>
-  <p style="font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:2rem">12 questions pour identifier avec précision le mécanisme qui te bloque — et projeter concrètement ce qui devient possible si tu le règles.</p>
-  <div style="display:flex;gap:1.25rem;margin-bottom:2.5rem;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:var(--accent)"></div><span class="lbl">12 questions</span></div>
-    <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:var(--accent)"></div><span class="lbl">3 minutes</span></div>
-    <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:var(--accent)"></div><span class="lbl">Analyse IA personnalisée</span></div>
+  <div style="display:flex;justify-content:center;margin-bottom:20px;">
+    <div style="display:inline-flex;align-items:center;gap:7px;background:var(--card);border:0.5px solid #2c2c2c;border-radius:20px;padding:6px 14px;">
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--wht);"></div>
+      <span class="m" style="font-size:8px;letter-spacing:1.5px;color:var(--tx2);text-transform:uppercase;">Accès limité · avant-première</span>
+    </div>
   </div>
-  <button class="btn" onclick="startQuiz()">Démarrer l'analyse</button>
-  <p class="lbl" style="margin-top:1rem;font-size:9px">Confidentiel · Résultat en DM Instagram</p>
+  <h1 style="color:var(--tx);font-size:21px;font-weight:700;line-height:1.3;margin-bottom:8px;text-align:center;">Tu n'as pas un problème de discipline.</h1>
+  <p style="color:var(--tx2);font-size:13px;line-height:1.55;margin-bottom:18px;text-align:center;">J'ai conçu ce diagnostic pour que tu comprennes ce qui te bloque vraiment et ce que ça te coûte.</p>
+  <div style="background:var(--card2);border:0.5px solid var(--bd);border-radius:8px;padding:11px 13px;margin-bottom:22px;">
+    <p class="m" style="color:#9a9a9a;font-size:10px;line-height:1.7;text-align:center;">Ce diagnostic a demandé plusieurs semaines de développement. Tu y accèdes en avant-première — il sera payant prochainement.</p>
+  </div>
+  <span class="lbl" style="margin-bottom:7px;">Code d'accès</span>
+  <input id="code" placeholder="••••••••••••" style="letter-spacing:2px;margin-bottom:10px;">
+  <button class="btn" onclick="checkCode()"><span>ACCÉDER AU DIAGNOSTIC</span></button>
+  <p id="code-err" style="color:var(--red);font-size:11px;text-align:center;margin-top:10px;display:none;">Code incorrect.</p>
+  <p style="text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#6a6a6a;letter-spacing:1.5px;">Code reçu en DM · @anthoclt</p>
 </div>
 
 <!-- QUIZ -->
-<div id="screen-quiz" class="screen">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <div class="prog-wrap">
-    <div class="prog-meta">
-      <span id="phase-label" class="lbl lbl-o"></span>
-      <span id="q-counter" class="lbl"></span>
+<div id="s-quiz" class="scr">
+  <button id="back-btn" class="back" onclick="goBack()" style="display:none;">← Précédent</button>
+  <div style="margin-bottom:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
+      <span id="q-phase" class="m" style="font-size:8.5px;color:var(--tx2);letter-spacing:2px;text-transform:uppercase;"></span>
+      <span id="q-count" class="m" style="font-size:8.5px;color:#888;"></span>
     </div>
-    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-bar"><div id="q-prog" class="prog-fill"></div></div>
   </div>
-  <button class="back-btn" id="back-btn" onclick="goBack()" style="display:none"><span>←</span><span>Retour</span></button>
-  <div id="phase-badge-wrap"></div>
-  <p id="q-text" class="q-text"></p>
-  <div id="opts-wrap"></div>
-</div>
-
-<!-- ANALYZING -->
-<div id="screen-analyzing" class="screen">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <div class="analyze-wrap">
-    <p class="lbl lbl-o" style="margin-bottom:1.5rem">Analyse en cours</p>
-    <div class="score-circle" id="score-circle">
-      <span class="circle-pct" id="circle-pct">0%</span>
-      <span class="circle-lbl">ANALYSE</span>
-    </div>
-    <div class="terminal" id="terminal"></div>
+  <p id="q-num" class="m" style="font-size:8.5px;color:var(--tx3);letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase;"></p>
+  <p id="q-text" style="color:var(--tx);font-size:16.5px;font-weight:500;line-height:1.5;margin-bottom:20px;"></p>
+  <div id="q-opts"></div>
+  <div id="q-open" style="display:none;">
+    <textarea id="q-textarea" oninput="updateCount()"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin:6px 2px 16px;"><span id="q-charcount" class="m" style="font-size:9px;color:#6a6a6a;">0 / 150</span></div>
+    <button id="q-next" class="btn" onclick="submitOpen()" disabled><span>CONTINUER</span></button>
+  </div>
+  <div style="margin-top:24px;padding:11px 13px;background:rgba(231,76,60,0.07);border:0.5px solid rgba(231,76,60,0.22);border-radius:8px;">
+    <p class="m" style="font-size:8.5px;color:#cf9088;line-height:1.65;text-align:center;">Diagnostic offert en avant-première. Si tu quittes maintenant, tu perds ton accès — va au bout, ton analyse t'attend.</p>
   </div>
 </div>
 
-<!-- GATE -->
-<div id="screen-gate" class="screen">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <p class="lbl lbl-o" style="margin-bottom:1rem">Profil identitaire — accès verrouillé</p>
-  <h2 style="font-size:20px;font-weight:600;margin-bottom:0.5rem">Ton analyse est prête</h2>
-  <p style="font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:1.5rem">Entre ton Instagram pour débloquer ton profil complet.<br>Anthony t'envoie le détail et la prochaine étape en DM sous 24h.</p>
-  <div class="blur-wrap">
-    <div class="blur-inner">
-      <div class="blur-ln" style="width:45%"></div><div class="blur-ln" style="width:100%"></div>
-      <div class="blur-ln" style="width:82%"></div><div class="blur-ln" style="width:66%"></div>
-      <div style="height:12px"></div>
-      <div class="blur-ln" style="width:100%"></div><div class="blur-ln" style="width:88%"></div><div class="blur-ln" style="width:55%"></div>
+<!-- TRANSITION -->
+<div id="s-trans" class="scr">
+  <div style="padding:80px 0;text-align:center;"><div class="spin"></div><p id="trans-txt" class="m" style="color:var(--tx2);font-size:11px;letter-spacing:1px;margin-top:24px;line-height:1.6;"></p></div>
+</div>
+
+<!-- UNLOCK -->
+<div id="s-unlock" class="scr">
+  <span class="lbl" style="color:var(--tx2);margin-bottom:12px;">Profil identitaire · accès verrouillé</span>
+  <h2 style="color:var(--tx);font-size:19px;font-weight:600;margin-bottom:8px;">Ton analyse est prête.</h2>
+  <p style="color:var(--tx2);font-size:12.5px;line-height:1.65;margin-bottom:20px;">Entre ton Instagram et ton email pour débloquer ton profil complet et le recevoir.</p>
+  <div style="position:relative;border:0.5px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:22px;">
+    <div style="padding:16px;filter:blur(6px);user-select:none;pointer-events:none;">
+      <div style="height:9px;background:#2a2a2a;border-radius:3px;margin-bottom:9px;width:45%;"></div>
+      <div style="height:9px;background:#222;border-radius:3px;margin-bottom:9px;width:100%;"></div>
+      <div style="height:9px;background:#222;border-radius:3px;margin-bottom:9px;width:85%;"></div>
+      <div style="height:9px;background:#222;border-radius:3px;width:70%;"></div>
     </div>
-    <div class="blur-ov"><div class="lock-badge"><p class="lbl" style="font-size:9px">Résultat verrouillé</p></div></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="background:var(--card);border:0.5px solid var(--bd2);border-radius:6px;padding:7px 13px;"><span class="m" style="font-size:8px;color:var(--tx2);letter-spacing:2px;">RÉSULTAT VERROUILLÉ</span></div></div>
   </div>
-  <div style="margin-bottom:12px">
-    <label class="inp-lbl" for="ig-input">Ton Instagram</label>
-    <input type="text" id="ig-input" placeholder="@anthoclt" autocomplete="off" autocorrect="off" autocapitalize="off"/>
-  </div>
-  <button class="btn btn-full" id="reveal-btn" onclick="revealResult()" disabled>Débloquer mon profil</button>
-  <p class="lbl" style="text-align:center;margin-top:1rem;font-size:9px">Aucun spam · Analyse envoyée dans tes DMs</p>
+  <span class="lbl" style="margin-bottom:7px;">Ton Instagram</span>
+  <input id="ig" placeholder="@tonpseudo" style="margin-bottom:14px;" oninput="checkUnlock()">
+  <span class="lbl" style="margin-bottom:7px;">Ton email</span>
+  <input id="email" type="email" inputmode="email" placeholder="ton@email.com" style="margin-bottom:8px;" oninput="checkUnlock()">
+  <p id="email-err" class="err">Entre une adresse email valide.</p>
+  <button id="unlock-btn" class="btn" onclick="revealResult()" disabled><span>DÉBLOQUER MON PROFIL</span></button>
+</div>
+
+<!-- LOADING -->
+<div id="s-load" class="scr">
+  <div style="padding:80px 0;text-align:center;"><div class="spin"></div><p id="load-txt" class="m" style="color:var(--tx2);font-size:11px;letter-spacing:1px;margin-top:24px;">Analyse de ton profil en cours...</p></div>
 </div>
 
 <!-- RESULT -->
-<div id="screen-result" class="screen">
-  <div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div>
-  <p class="lbl lbl-o" style="margin-bottom:1.5rem">Diagnostic Identitaire — Résultat</p>
-  <div class="score-row">
-    <div class="score-card">
-      <p class="lbl" style="margin-bottom:8px">Score de<br>transformabilité</p>
-      <p class="score-big" id="res-score">—</p>
-      <span class="score-unit">/100</span>
+<div id="s-result" class="scr">
+  <span class="lbl" style="color:var(--tx2);margin-bottom:14px;">Diagnostic · Résultat</span>
+  <div style="display:flex;gap:9px;margin-bottom:12px;">
+    <div style="background:var(--card);border:1px solid var(--wht);border-radius:11px;padding:13px;flex:1;text-align:center;">
+      <span class="lbl" style="margin-bottom:5px;color:var(--tx3);">Score</span>
+      <div id="r-score" class="m" style="font-size:32px;font-weight:500;color:var(--wht);line-height:1;">—</div>
+      <span class="lbl" style="color:var(--tx4);margin-top:3px;">/100</span>
     </div>
-    <div class="profile-card">
-      <p class="lbl" style="margin-bottom:8px">Profil identitaire</p>
-      <p id="res-name" style="font-size:15px;font-weight:600;line-height:1.3;color:var(--text)"></p>
+    <div style="background:var(--card);border:0.5px solid var(--bd);border-radius:11px;padding:13px;flex:2;display:flex;flex-direction:column;justify-content:center;">
+      <span class="lbl" style="margin-bottom:7px;color:var(--tx3);">Profil identitaire</span>
+      <div id="r-name" style="font-size:14px;font-weight:500;color:var(--tx);line-height:1.3;">—</div>
     </div>
   </div>
-  <div class="res-body">
-    <p id="res-p1" class="res-p"></p>
-    <p id="res-p2" class="res-p"></p>
-    <p id="res-vision" class="res-vision"></p>
-    <div class="div"></div>
-    <p id="res-urgence" class="urgence"></p>
+  <div class="card" style="margin-bottom:10px;">
+    <p id="r-p1" style="font-size:11.5px;line-height:1.8;color:#bbb;margin-bottom:9px;"></p>
+    <p id="r-p2" style="font-size:11.5px;line-height:1.8;color:#9a9a9a;"></p>
   </div>
-  <p class="traj-ttl">Tes deux trajectoires — 3 ans</p>
-  <div class="traj-grid">
-    <div class="traj-col traj-now"><p class="traj-hdr">Si tu continues</p><div id="traj-now"></div></div>
-    <div class="traj-col traj-with"><p class="traj-hdr">Avec une structure</p><div id="traj-with"></div></div>
+  <div style="background:rgba(231,76,60,0.08);border:0.5px solid rgba(231,76,60,0.3);border-left:2px solid var(--red);border-radius:0 9px 9px 0;padding:12px;margin-bottom:11px;">
+    <span class="lbl" style="color:var(--redtx);margin-bottom:6px;">Le risque réel</span>
+    <p id="r-danger" style="font-size:11.5px;line-height:1.8;color:#c4c4c4;"></p>
+    <p id="r-urgence" class="m" style="font-size:9px;color:#b58a84;margin-top:9px;font-style:italic;line-height:1.5;"></p>
   </div>
-  <div class="cta-card">
-    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:0.75rem">Anthony a reçu ton profil complet. Il revient vers toi en DM sous 24h avec la suite.</p>
-    <p class="lbl lbl-o" id="res-ig" style="font-size:9px"></p>
+  <span class="lbl" style="margin-bottom:10px;color:var(--tx3);">Tes deux trajectoires</span>
+  <div id="r-now" style="display:flex;flex-direction:column;gap:5px;margin-bottom:9px;"></div>
+  <div style="height:0.5px;background:var(--bd);margin-bottom:9px;"></div>
+  <div id="r-with" style="display:flex;flex-direction:column;gap:5px;margin-bottom:15px;"></div>
+  <div style="background:var(--card);border:0.5px solid var(--bd);border-radius:11px;padding:14px;text-align:center;">
+    <span class="lbl" style="color:var(--tx2);margin-bottom:6px;">Prochaine étape disponible</span>
+    <p style="font-size:11.5px;color:#9a9a9a;line-height:1.65;margin-bottom:12px;">Ton profil correspond aux critères. 30 minutes pour construire ton plan avec Anthony — créneaux limités.</p>
+    <button class="btn" onclick="openBooking()"><span>RÉSERVER MON APPEL</span></button>
   </div>
-  <div class="booking-card" id="booking-card" style="display:none">
-    <p class="lbl" style="color:var(--green);opacity:0.8;margin-bottom:0.75rem">Prochaine étape disponible</p>
-    <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:1rem">Ton profil indique que tu es prêt pour un appel de clarification de 20 minutes. Anthony peut construire ton plan avec toi maintenant.</p>
-    <button class="btn btn-full" onclick="openBooking()">Réserver mon appel — Gratuit</button>
-  </div>
+  <p style="text-align:center;margin-top:14px;" class="m"><span style="font-size:8px;color:#5a5a5a;letter-spacing:1.5px;">@anthoclt · THE IDENTITY</span></p>
 </div>
 
 </div>
+
 <script>
-const ACCESS_CODE='IDENTITE2026';
-const BOOKING_URL='https://appel-declic.short.gy/';
-const TIMES=['Dans 3 mois','Dans 6 mois','Dans 1 an'];
-const STEPS=['Identification des patterns comportementaux...','Analyse des schémas de blocage identitaire...','Calcul du score de transformabilité...','Génération de ta projection personnalisée...'];
-const PHASES=[
-  {label:'Phase 01',name:'Ta situation',range:[0,2]},
-  {label:'Phase 02',name:'Tes blocages',range:[3,5]},
-  {label:'Phase 03',name:'Ta vision',range:[6,8]},
-  {label:'Phase 04',name:'Ton potentiel',range:[9,11]}
-];
-const QS_BASE=[
-  {id:'q0',q:'Ta situation principale en ce moment :',opts:['Dans une structure institutionnelle ou salariée qui ne m\'appartient pas','Dans un job alimentaire — en attendant autre chose','À mon compte ou en transition — mais bloqué dans ma progression','Je construis déjà quelque chose mais je stagne']},
-  {id:'q1',q:'Depuis combien de temps tu sens que ta vie actuelle n\'est pas vraiment la tienne :',opts:['Moins de 6 mois — c\'est récent','6 mois à 1 an','1 à 3 ans — ça traîne','Plus de 3 ans — j\'ai appris à vivre avec']},
-  {id:'q2',q:'T\'as déjà essayé de construire quelque chose en dehors de ta situation actuelle :',opts:['Oui — un projet, une formation ou une activité en parallèle','Oui — plusieurs tentatives, sans résultat durable','Non — j\'y pense mais je n\'ai jamais vraiment commencé','Non — je sais même pas par où commencer']},
-];
-const QS_TRIED=[
-  {id:'q3a',q:'Ce qui s\'est passé avec ces tentatives :',opts:['J\'ai commencé mais je n\'ai pas tenu dans la durée','Ça n\'a jamais vraiment décollé — je sais pas pourquoi','J\'ai eu des résultats mais je me sens toujours aussi bloqué','Je tourne encore en rond sur la même tentative']},
-  {id:'q4a',q:'Si t\'es honnête, ce qui t\'a vraiment arrêté :',opts:['Je n\'avais pas de direction claire — juste une idée vague','La peur de me tromper ou de perdre mon temps','Je manquais de structure pour tenir dans la durée','Quelque chose en moi que j\'arrive pas encore à nommer']},
-];
-const QS_NOTTRIED=[
-  {id:'q3b',q:'Ce qui t\'empêche de commencer :',opts:['Je sais pas quoi construire ni par où commencer','J\'ai peur de me lancer pour rien et de perdre du temps','J\'attends le bon moment — qui n\'arrive jamais','Je manque de confiance en ma capacité à aller au bout']},
-  {id:'q4b',q:'Si tu pouvais commencer demain, ce qui te manquerait encore :',opts:['Un projet clair et validé adapté à qui je suis','Quelqu\'un qui structure tout ça avec moi','La certitude que c\'est vraiment possible pour moi','Un environnement qui soutient ce que je veux construire']},
-];
-const QS_COMMON=[
-  {id:'q5',q:'Ce que tu veux construire tourne autour de quel univers :',opts:['Sport, performance physique ou discipline mentale','Créativité — art, musique, contenu, expression','Business, stratégie, transmission d\'une expertise','Connexion humaine — aider, coacher, inspirer']},
-  {id:'q6',q:'La vie que tu veux construire ressemble à :',opts:['Vivre de ma passion ou de ma discipline','Créer quelque chose qui me représente et me génère des revenus','Être libre de choisir mes projets et mes journées','Avoir un impact réel sur les gens autour de moi']},
-  {id:'q7',q:'Ce projet ou cette vie, il est dans ta tête depuis :',opts:['Moins de 6 mois','6 mois à 1 an','1 à 3 ans — ça revient régulièrement','Plus de 3 ans — je le repousse encore et encore']},
-  {id:'q8',q:'Si rien ne change dans les 12 prochains mois, ce que tu perds concrètement :',opts:['Du temps que je ne récupérerai jamais','Des opportunités que d\'autres saisissent pendant que je stagne','Ma conviction que c\'est encore possible pour moi','Mon énergie à rester dans une situation qui n\'est pas la mienne']},
-  {id:'q9',q:'Des personnes autour de toi ont construit ce qu\'elles voulaient. Ce que ça te fait :',opts:['De la frustration — je me demande pourquoi pas moi','De la motivation — si eux peuvent, je peux aussi','De l\'injustice — ils ont eu plus de contexte','De l\'indifférence — leurs chemins ne ressemblent pas au mien']},
-  {id:'q10',q:'Ce qui te drive vraiment, ce qui te fait te lever quand tu es aligné :',opts:['La performance et le dépassement de soi','La création et l\'expression de quelque chose d\'unique','Construire des systèmes et voir les résultats','Connecter et avoir un impact sur les autres']},
-  {id:'q11',q:'Si quelqu\'un pouvait clarifier ta direction et construire un plan avec toi en 20 minutes :',opts:['Je le ferais maintenant — j\'en ai besoin','Peut-être — si c\'est vraiment adapté à ma situation','J\'aurais envie mais j\'aurais peur de vraiment me lancer','Je suis pas encore prêt pour ça']},
+const CODE='IDENTITE2026';
+const FORMSPREE='https://formspree.io/f/xojyrqzb';
+const BOOKING_DIAGNOSTIC='https://appel-declic.short.gy/diag';
+const BOOKING_EMAIL='https://appel-declic.short.gy/email';
+
+const BRANCH={phase:"Phase 01 · Ton point de départ",q:"Voilà où tu en es en ce moment :",options:[
+  {t:"J'ai un projet ou une direction définie — j'avance mais pas de façon cohérente",b:"main"},
+  {t:"J'ai une vision claire de ce que je veux construire — mais l'exécution ne suit pas",b:"main"},
+  {t:"Je sens que je ne suis pas à ma place — mais je n'ai pas encore de projet clair",b:"alt"},
+  {t:"Je sais que quelque chose doit changer — mais je ne sais pas encore vers quoi",b:"alt"}
+]};
+
+const MAIN=[
+  {type:"open",phase:"Phase 01 · Ton projet",q:"En une ou deux phrases : c'est quoi le projet ou la direction qui te tient vraiment à cœur en ce moment ?",max:150,ph:"Ex : lancer mon activité, créer du contenu, développer mon business..."},
+  {type:"qcm",phase:"Phase 02 · Ton exécution",q:"Quand tu regardes ton exécution sur ce projet, ce qui se passe le plus souvent :",o:["J'avance par à-coups — phases intenses puis périodes où je n'y touche pas","J'exécute mais jamais à la hauteur de ce que je sais être capable de faire","Je commence et je lâche avant d'avoir un résultat visible","Je remets à demain avec une bonne raison — demain devient après-demain"]},
+  {type:"qcm",phase:"Phase 02 · Ton exécution",q:"Sur ton projet, ta constance dans le temps ressemble à :",o:["Elle flanche précisément quand ça devient sérieux ou visible pour les autres","Elle existe par phases mais ne s'installe jamais durablement","Elle suit quand ça va, disparaît quand je doute","Elle est là mais je la mets sur des choses qui ne m'avancent pas vraiment"]},
+  {type:"open",phase:"Phase 03 · Ta peur",q:"Quand tu penses au fait de ne pas avancer comme tu voudrais — quelle peur ou quel doute ça réveille en toi, au fond ?",max:220,ph:"Sois honnête. C'est ce qui rendra ton analyse précise."},
+  {type:"qcm",phase:"Phase 03 · Le pattern",q:"Ce que tu te dis quand tu rates une semaine sur ton projet :",o:["Il faut que je me reprenne — ça repart puis ça casse de nouveau","Je suis pas encore la personne qui fait ça naturellement","Il manque quelque chose à ma méthode — je cherche une meilleure approche","Je l'analyse brièvement et je passe à autre chose sans vraiment comprendre"]},
+  {type:"qcm",phase:"Phase 04 · L'écart",q:"Entre la version de toi qui a la vision et celle qui l'exécute au quotidien :",o:["Il y a un écart que je vois clairement mais que je n'arrive pas à refermer","Il y a une contradiction que j'essaie de combler avec plus de méthode — sans résultat","Il y a quelque chose que j'ai appris à vivre avec mais qui me coûte chaque semaine","Il y a un blocage que je comprends pas — je devrais exécuter et ça ne suit pas"]},
+  {type:"qcm",phase:"Phase 04 · L'écart",q:"Ce que tu as essayé pour régler ça :",o:["Systèmes, outils, méthodes — rien ne tient dans la durée","Plus de discipline, de routine — ça aide mais ça ne règle pas le fond","Contenu, formations, inspirations — je consomme beaucoup, j'exécute peu","Pas grand chose de structuré — j'attends que ça se règle avec le temps"]},
+  {type:"qcm",phase:"Phase 04 · L'écart",q:"Ce que ce blocage te coûte concrètement en ce moment :",o:["Des semaines entières où je sais que j'aurais dû avancer et où je n'ai pas avancé","La distance qui grandit entre qui je suis et qui je veux être","Des opportunités concrètes que je vois passer pendant que j'attends d'être prêt","L'énergie dépensée à recommencer plutôt qu'à continuer"]},
+  {type:"qcm",phase:"Phase 05 · Qualification",q:"Quand tu penses honnêtement à ce qui t'empêche d'exécuter :",o:["C'est quelque chose en moi — une résistance que je sens mais n'arrive pas à nommer","C'est externe — la méthode, le temps, les ressources, les conditions","Les deux — mais même avec les conditions parfaites, ça bloquerait encore","Je suis honnêtement pas sûr de la réponse"]},
+  {type:"qcm",phase:"Phase 05 · Qualification",q:"Pour avancer sur ce que tu viens de décrire, t'as déjà investi dans un accompagnement ou une formation payante ?",o:["Oui — plusieurs fois","Oui — une fois","Non — mais je suis prêt à le faire si c'est vraiment adapté","Non — je cherche d'abord des ressources gratuites"]},
+  {type:"qcm",phase:"Phase 05 · Qualification",q:"Si quelqu'un pouvait t'accompagner concrètement sur ce que tu viens de décrire, tu serais :",o:["Prêt maintenant — c'est exactement ce qu'il me faut","Intéressé — si c'est vraiment adapté à ma situation","Tenté — mais j'aurais peur de vraiment m'engager","Pas encore prêt — ce n'est pas le bon moment"]}
 ];
 
-let currentIdx=0,activeQs=[],answers=[],picking=false,branchChosen=false;
+const ALT=[
+  {type:"qcm",phase:"Phase 01 · Ta situation",q:"Depuis combien de temps tu sens que tu n'es pas à ta place :",o:["Moins d'un an — c'est assez récent","1 à 3 ans — ça s'est installé progressivement","Plus de 3 ans — j'ai appris à vivre avec","C'est difficile à dater — j'ai toujours eu ce sentiment en fond"]},
+  {type:"open",phase:"Phase 01 · Ta peur",q:"Quand tu réalises que tu n'es pas à ta place — quelle peur ou quel doute ça réveille en toi, au fond ?",max:220,ph:"Sois honnête. C'est ce qui rendra ton analyse précise."},
+  {type:"qcm",phase:"Phase 02 · Tes tentatives",q:"T'as déjà essayé de changer quelque chose à ta situation :",o:["Oui — un projet, une reconversion, un départ — mais rien n'a vraiment tenu","Oui — mais j'ai reculé au moment de vraiment m'engager","Pas encore — j'attends de savoir vers quoi aller avant de bouger","Non — je reste là parce que je ne vois pas quelle alternative est vraiment pour moi"]},
+  {type:"qcm",phase:"Phase 02 · Tes tentatives",q:"Ce qui t'empêche de définir une direction claire :",o:["Je ne sais pas qui je suis vraiment en dehors de ce qu'on attend de moi","J'ai peur de faire le mauvais choix et de perdre ce que j'ai déjà","J'attends que ça s'impose à moi naturellement — mais ça ne vient pas","Je génère des idées mais aucune ne me convainc vraiment sur la durée"]},
+  {type:"open",phase:"Phase 03 · Ta direction",q:"En une phrase : si tu pouvais construire quelque chose qui te ressemble vraiment, ça ressemblerait à quoi ?",max:150,ph:"Même flou, écris ce qui te vient..."},
+  {type:"qcm",phase:"Phase 03 · Ta direction",q:"Ce que ça te coûte de rester là où tu es :",o:["Une énergie constante à performer dans quelque chose qui ne me ressemble pas","Le sentiment de passer à côté de quelque chose sans savoir exactement quoi","Des années qui passent pendant que quelqu'un d'autre construit ce que j'aurais dû construire","La distance qui grandit entre qui je suis et qui je voulais être"]},
+  {type:"qcm",phase:"Phase 04 · Qualification",q:"Pour avancer sur ce que tu ressens, t'as déjà investi dans un accompagnement ou une formation payante ?",o:["Oui — plusieurs fois","Oui — une fois","Non — mais je suis prêt à le faire si c'est vraiment adapté","Non — je cherche d'abord des ressources gratuites"]},
+  {type:"qcm",phase:"Phase 04 · Qualification",q:"Si quelqu'un pouvait t'accompagner pour clarifier ta direction depuis ton identité, tu serais :",o:["Prêt maintenant — c'est exactement ce qu'il me faut","Intéressé — si c'est vraiment adapté à ma situation","Tenté — mais j'aurais peur de vraiment m'engager","Pas encore prêt — ce n'est pas le bon moment"]}
+];
 
-function checkCode(){
-  const val=document.getElementById('code-input').value.trim().toUpperCase();
-  const err=document.getElementById('code-error');
-  if(val===ACCESS_CODE){err.classList.remove('show');show('screen-intro');}
-  else{err.classList.add('show');document.getElementById('code-input').style.borderColor='var(--red)';setTimeout(()=>{document.getElementById('code-input').style.borderColor='';},1500);}
-}
-document.addEventListener('keydown',e=>{if(e.key==='Enter'){const l=document.getElementById('screen-lock');if(l.classList.contains('active'))checkCode();}});
+const TRANS={main:{4:"Tes réponses dessinent un pattern précis...",8:"Analyse de ton mécanisme identitaire en cours..."},alt:{3:"Tes réponses dessinent quelque chose de précis...",6:"Analyse de ton profil en cours..."}};
 
-function getPhase(idx){
-  const total=12;
-  const seg=Math.floor(idx/(total/4));
-  return PHASES[Math.min(seg,3)];
-}
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function startQuiz(){activeQs=[...QS_BASE];currentIdx=0;answers=[];branchChosen=false;show('screen-quiz');renderQ();}
+let questions=[],idx=0,answers=[],branch='';
+
+function checkCode(){const v=document.getElementById('code').value.trim().toUpperCase();if(v===CODE){show('s-quiz');startQuiz();}else{document.getElementById('code-err').style.display='block';}}
+document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')checkCode();});
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function startQuiz(){idx=0;answers=[];branch='';questions=[BRANCH];renderQ();}
 
 function renderQ(){
-  const q=activeQs[currentIdx];
-  const pct=Math.round((currentIdx/12)*100);
-  const phase=getPhase(currentIdx);
-  document.getElementById('phase-label').textContent=phase.label+' — '+phase.name;
-  document.getElementById('q-counter').textContent=(currentIdx+1)+' / 12';
-  document.getElementById('prog-fill').style.width=pct+'%';
-  document.getElementById('back-btn').style.display=currentIdx>0?'flex':'none';
-  const badge=document.getElementById('phase-badge-wrap');
-  const prev=currentIdx>0?getPhase(currentIdx-1):null;
-  const isNew=!prev||prev.label!==phase.label;
-  badge.innerHTML=isNew?`<div class="phase-badge"><span class="lbl lbl-o">${phase.label}</span><span class="lbl" style="margin-left:3px">${phase.name}</span></div>`:'';
+  const q=questions[idx];const total=questions.length;
+  document.getElementById('back-btn').style.display=idx>0?'inline-flex':'none';
+  document.getElementById('q-phase').textContent=q.phase;
+  document.getElementById('q-count').textContent=(idx+1)+' / '+total;
+  document.getElementById('q-prog').style.width=(idx/total*100)+'%';
   document.getElementById('q-text').textContent=q.q;
-  const wrap=document.getElementById('opts-wrap');
-  wrap.innerHTML='';
-  const L=['A','B','C','D'];
-  q.opts.forEach((opt,i)=>{
-    const btn=document.createElement('button');
-    btn.className='opt';
-    btn.innerHTML=`<span class="opt-l">${L[i]}</span>${opt}`;
-    btn.onclick=()=>pick(i,opt,btn);
-    wrap.appendChild(btn);
-  });
-}
-
-function pick(optIdx,optText,btn){
-  if(picking)return;
-  picking=true;
-  btn.classList.add('sel');
-  answers[currentIdx]={q:activeQs[currentIdx].q,a:optText,idx:optIdx};
-  if(currentIdx===2&&!branchChosen){
-    branchChosen=true;
-    const branch=optIdx<=1?QS_TRIED:QS_NOTTRIED;
-    activeQs=[...QS_BASE,...branch,...QS_COMMON];
-  }
-  if(currentIdx===5){
-    setTimeout(()=>{picking=false;currentIdx++;showBoost('⚡','Ton plan prend forme...','Les premières données identitaires sont analysées. Continue pour affiner ta projection.',()=>renderQ());},280);
-    return;
-  }
-  if(currentIdx===8){
-    setTimeout(()=>{picking=false;currentIdx++;showBoost('🎯','Projection en cours de génération','Basé sur tes réponses, l\'IA construit ta trajectoire personnalisée.',()=>renderQ());},280);
-    return;
-  }
-  setTimeout(()=>{
-    picking=false;
-    if(currentIdx<activeQs.length-1){currentIdx++;renderQ();}
-    else{runAnalysis();}
-  },300);
-}
-
-function goBack(){
-  if(currentIdx>0){
-    currentIdx--;
-    if(currentIdx<=2){branchChosen=false;activeQs=[...QS_BASE];}
-    renderQ();
+  const opts=document.getElementById('q-opts'),open=document.getElementById('q-open');
+  const prev=answers[idx];
+  if(q.type==='open'){
+    document.getElementById('q-num').textContent='Réponse libre';
+    opts.style.display='none';open.style.display='block';
+    const ta=document.getElementById('q-textarea');
+    ta.maxLength=q.max;ta.placeholder=q.ph||'';ta.value=prev?prev.a:'';
+    document.getElementById('q-charcount').textContent=ta.value.length+' / '+q.max;
+    document.getElementById('q-next').disabled=ta.value.trim().length<3;
+    setTimeout(()=>ta.focus(),200);
+  }else{
+    document.getElementById('q-num').textContent=idx===0?'Pour commencer':'Question '+idx;
+    opts.style.display='block';open.style.display='none';opts.innerHTML='';
+    const L=['A','B','C','D'];
+    (q.options||q.o).forEach((opt,i)=>{
+      const t=typeof opt==='string'?opt:opt.t;
+      const d=document.createElement('div');d.className='opt';
+      if(prev&&prev.a===t)d.classList.add('sel');
+      d.innerHTML='<span class="opt-l">'+L[i]+'</span><span class="opt-t">'+t+'</span>';
+      d.onclick=()=>selectOpt(i,t,opt);opts.appendChild(d);
+    });
   }
 }
 
-function showBoost(icon,title,sub,cb){
-  const o=document.getElementById('boost-overlay');
-  document.getElementById('boost-icon').textContent=icon;
-  document.getElementById('boost-title').textContent=title;
-  document.getElementById('boost-sub').textContent=sub;
-  o.classList.add('show');
-  setTimeout(()=>{o.classList.remove('show');setTimeout(cb,300);},2200);
+function selectOpt(i,t,opt){
+  document.querySelectorAll('#q-opts .opt').forEach((o,j)=>{o.classList.toggle('sel',j===i);});
+  if(idx===0&&opt.b){if(branch!==opt.b){branch=opt.b;questions=[BRANCH].concat(branch==='main'?MAIN:ALT);answers=answers.slice(0,1);}}
+  answers[idx]={q:questions[idx].q,a:t};
+  setTimeout(nextQ,260);
+}
+function updateCount(){const ta=document.getElementById('q-textarea');document.getElementById('q-charcount').textContent=ta.value.length+' / '+questions[idx].max;document.getElementById('q-next').disabled=ta.value.trim().length<3;}
+function submitOpen(){answers[idx]={q:questions[idx].q,a:document.getElementById('q-textarea').value.trim()};nextQ();}
+function goBack(){if(idx===0)return;idx--;show('s-quiz');renderQ();}
+function nextQ(){
+  idx++;
+  if(idx>=questions.length){show('s-unlock');return;}
+  const t=TRANS[branch]&&TRANS[branch][idx];
+  if(t){document.getElementById('trans-txt').textContent=t;show('s-trans');setTimeout(()=>{show('s-quiz');renderQ();},1700);}
+  else renderQ();
 }
 
-function pause(ms){return new Promise(r=>setTimeout(r,ms));}
-
-async function runAnalysis(){
-  show('screen-analyzing');
-  const tb=document.getElementById('terminal');
-  tb.innerHTML='';
-  STEPS.forEach((s,i)=>{
-    const line=document.createElement('div');
-    line.className='t-line';line.id='tl-'+i;
-    line.innerHTML=`<div class="t-dot" id="td-${i}"></div><span class="t-txt">${s}</span>`;
-    tb.appendChild(line);
-  });
-  const pctEl=document.getElementById('circle-pct');
-  const circle=document.getElementById('score-circle');
-  for(let i=0;i<STEPS.length;i++){
-    await pause(120);
-    document.getElementById('tl-'+i).classList.add('vis');
-    document.getElementById('td-'+i).classList.add('done');
-    pctEl.textContent=Math.round(((i+1)/STEPS.length)*100)+'%';
-    if(i===STEPS.length-1)circle.classList.add('lit');
-    await pause(820);
-  }
-  await pause(400);
-  show('screen-gate');
-  const igInput=document.getElementById('ig-input');
-  const revealBtn=document.getElementById('reveal-btn');
-  igInput.addEventListener('input',()=>{revealBtn.disabled=!igInput.value.trim();});
-  igInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&igInput.value.trim())revealResult();});
+function validEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);}
+function checkUnlock(){
+  const ig=document.getElementById('ig').value.trim();
+  const em=document.getElementById('email').value.trim();
+  const ev=validEmail(em);
+  document.getElementById('email-err').style.display=(em.length>3&&!ev)?'block':'none';
+  document.getElementById('unlock-btn').disabled=!(ig.length>1&&ev);
 }
+
+const LOADMSGS=["Analyse de ton profil en cours...","Identification de ton mécanisme...","Calcul de tes trajectoires...","Génération de ton diagnostic..."];
 
 async function revealResult(){
-  const ig=document.getElementById('ig-input').value.trim().replace(/^@/,'');
-  if(!ig)return;
-  const btn=document.getElementById('reveal-btn');
-  btn.disabled=true;btn.textContent='GÉNÉRATION EN COURS...';
-  const validAnswers=answers.filter(Boolean);
-  const answersText=validAnswers.map((a,i)=>`Q${i+1}: ${a.q}\nRéponse: ${a.a}`).join('\n\n');
-  const fallback={profileName:'Le Bâtisseur Sans Structure',transformabilityScore:78,paragraph1:'Tu sais que la vie que tu mènes n\'est pas celle que tu veux construire. Tu as des envies, des projets dans la tête — mais quelque chose t\'empêche d\'aller au bout. Ce n\'est pas un problème de méthode. C\'est un problème d\'alignement identitaire.',paragraph2:'Le vrai blocage n\'est pas dans le véhicule que tu choisis. Il est dans le fait que tu n\'agis pas encore depuis une identité ancrée. Tant que ça n\'est pas réglé, chaque nouveau projet reproduira le même pattern.',visionProjection:'Quelqu\'un avec ton profil et ta vision peut construire quelque chose de concret dans les 6 à 12 prochains mois — à condition de régler le blocage identitaire en amont. C\'est exactement ce sur quoi on travaille ensemble.',trajectoryNow:['Tu continues avec les mêmes tentatives sans résultat différent','La conviction que c\'est encore possible commence à s\'effriter','Le projet que t\'as en tête appartient à quelqu\'un d\'autre'],trajectoryWith:['Tu identifies le vrai blocage et tu construis ta première traction','Tu as une direction claire et quelque chose qui avance concrètement','Tu vis de ce que tu as construit — une vie qui te ressemble'],urgenceLine:'Chaque semaine sans clarté est une semaine de plus dans le même endroit.'};
+  const ig=document.getElementById('ig').value.trim().replace(/^@/,'');
+  const em=document.getElementById('email').value.trim();
+  if(!validEmail(em)){document.getElementById('email-err').style.display='block';return;}
+  show('s-load');
+  let li=0;const lt=document.getElementById('load-txt');
+  const liv=setInterval(()=>{li=(li+1)%LOADMSGS.length;lt.textContent=LOADMSGS[li];},1400);
+  const fallback={profileName:"Le Constructeur en Tension",transformabilityScore:81,paragraph1:"Tu sais déjà quoi faire. Ce qui te bloque n'est pas l'information — c'est l'écart entre la personne que tu es aujourd'hui et celle qui exécuterait naturellement ce que tu portes.",paragraph2:"Ce n'est ni un problème de méthode, ni de discipline. C'est identitaire. Tant que cet écart n'est pas refermé, chaque nouveau départ reproduira le même schéma.",dangerBlock:"Chaque cycle où tu n'exécutes pas renforce une croyance : que tu n'es pas quelqu'un qui tient. Cette identité se solidifie avec le temps, et plus elle se solidifie, plus le prochain départ coûtera d'énergie.",urgenceLine:"Chaque semaine sans structure est une semaine de plus à confirmer le schéma.",trajectoryNow:["le même cycle, sans résultat différent","la conviction que c'est possible commence à s'effriter","tu regardes en arrière sur une année identique à la précédente"],trajectoryWith:["tu identifies le vrai blocage et tu construis ta première traction","tu exécutes ce que tu ajournes depuis des mois","tu vis depuis l'identité qui correspond à ton ambition"]};
   let result=fallback;
   try{
-    const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers:validAnswers})});
+    const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers,branch})});
     const data=await resp.json();
-    if(data.content&&data.content[0]){
-      const txt=data.content[0].text.replace(/```json|```/g,'').trim();
-      result=JSON.parse(txt);
-    }
+    if(data.content&&data.content[0]){result=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}
   }catch(e){}
-
-  document.getElementById('res-score').textContent=result.transformabilityScore;
-  document.getElementById('res-name').textContent=result.profileName;
-  document.getElementById('res-p1').textContent=result.paragraph1;
-  document.getElementById('res-p2').textContent=result.paragraph2;
-  document.getElementById('res-vision').textContent=result.visionProjection||'';
-  document.getElementById('res-urgence').textContent=result.urgenceLine;
-  document.getElementById('res-ig').textContent='@'+ig+' · THE IDENTITY';
-  const nowWrap=document.getElementById('traj-now');
-  const withWrap=document.getElementById('traj-with');
-  nowWrap.innerHTML='';withWrap.innerHTML='';
-  (result.trajectoryNow||[]).forEach((t,i)=>{nowWrap.innerHTML+=`<div class="traj-item"><span class="traj-time">${TIMES[i]}</span><span class="tnow">${t}</span></div>`;});
-  (result.trajectoryWith||[]).forEach((t,i)=>{withWrap.innerHTML+=`<div class="traj-item"><span class="traj-time">${TIMES[i]}</span><span class="twith">${t}</span></div>`;});
-  try {
-  await fetch('https://formspree.io/f/xojyrqzb', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
- body: JSON.stringify({
-      instagram: ig,
-      profil: result.profileName,
-      score: result.transformabilityScore,
-      urgence: result.urgenceLine,
-      situation: validAnswers[0] ? validAnswers[0].a : 'Non renseigné',
-      tentatives: validAnswers[2] ? validAnswers[2].a : 'Non renseigné',
-      vision: validAnswers[6] ? validAnswers[6].a : 'Non renseigné',
-      readiness: validAnswers[11] ? validAnswers[11].a : 'Non renseigné'
-    })
-  });
-} catch(e) {}
-  if(result.transformabilityScore>=75)document.getElementById('booking-card').style.display='block';
-  localStorage.setItem('ti_completed','1');
-  show('screen-result');
+  clearInterval(liv);
+  try{
+    await fetch(FORMSPREE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      instagram:ig,email:em,branche:branch,profil:result.profileName,score:result.transformabilityScore,urgence:result.urgenceLine,
+      reponses:answers.map(a=>a.q+' → '+a.a).join('\n\n')
+    })});
+  }catch(e){}
+  document.getElementById('r-score').textContent=result.transformabilityScore;
+  document.getElementById('r-name').textContent=result.profileName;
+  document.getElementById('r-p1').textContent=result.paragraph1;
+  document.getElementById('r-p2').textContent=result.paragraph2;
+  document.getElementById('r-danger').textContent=result.dangerBlock||'';
+  document.getElementById('r-urgence').textContent=result.urgenceLine||'';
+  const TIMES=['3 MOIS','6 MOIS','1 AN'];
+  const now=document.getElementById('r-now');now.innerHTML='';
+  (result.trajectoryNow||[]).forEach((t,i)=>{const x=t.replace(/^\d+\s*(mois|an)\s*:\s*/i,'');now.innerHTML+='<div style="display:flex;gap:9px;"><span class="m" style="font-size:8px;color:#888;min-width:46px;padding-top:2px;">'+TIMES[i]+'</span><span style="font-size:11px;color:#d08a80;line-height:1.5;">'+x+'</span></div>';});
+  const wth=document.getElementById('r-with');wth.innerHTML='';
+  (result.trajectoryWith||[]).forEach((t,i)=>{const x=t.replace(/^\d+\s*(mois|an)\s*:\s*/i,'');wth.innerHTML+='<div style="display:flex;gap:9px;"><span class="m" style="font-size:8px;color:#888;min-width:46px;padding-top:2px;">'+TIMES[i]+'</span><span style="font-size:11px;color:#6cc486;line-height:1.5;">'+x+'</span></div>';});
+  show('s-result');
 }
-
-function openBooking(){window.open(BOOKING_URL,'_blank');}
-
-window.addEventListener('load',()=>{
-  if(localStorage.getItem('ti_completed')){
-    const done=document.createElement('div');
-    done.id='screen-done';
-    done.className='screen active';
-    done.innerHTML=`<div class="hdr"><span class="hdr-logo">THE IDENTITY</span><div class="pulse"></div></div><div style="text-align:center;padding:4rem 0"><div style="font-size:36px;margin-bottom:1.25rem">✓</div><p class="lbl lbl-o" style="margin-bottom:1rem">Diagnostic déjà complété</p><h2 style="font-size:20px;font-weight:600;margin-bottom:1rem;line-height:1.4">Ton analyse a déjà été envoyée</h2><p style="font-size:13px;color:var(--text2);line-height:1.75;max-width:360px;margin:0 auto">Anthony t'a envoyé ton profil complet en DM Instagram. Vérifie tes messages.</p></div>`;
-    document.querySelector('.wrap').prepend(done);
-    document.getElementById('screen-lock').classList.remove('active');
-  }
-});
+function openBooking(){window.open(BOOKING_DIAGNOSTIC,'_blank');}
 </script>
 </body>
 </html>
