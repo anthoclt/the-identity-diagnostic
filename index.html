@@ -131,7 +131,7 @@ textarea{font-family:'Syne',sans-serif;resize:none;line-height:1.6;min-height:96
   <span class="lbl" style="color:var(--tx2);margin-bottom:14px;">Diagnostic · Résultat</span>
   <div style="display:flex;gap:9px;margin-bottom:12px;">
     <div style="background:var(--card);border:1px solid var(--wht);border-radius:11px;padding:13px;flex:1;text-align:center;">
-      <span class="lbl" style="margin-bottom:5px;color:var(--tx3);">Score</span>
+      <span class="lbl" style="margin-bottom:5px;color:var(--tx3);">Transformabilité</span>
       <div id="r-score" class="m" style="font-size:32px;font-weight:500;color:var(--wht);line-height:1;">—</div>
       <span class="lbl" style="color:var(--tx4);margin-top:3px;">/100</span>
     </div>
@@ -153,10 +153,10 @@ textarea{font-family:'Syne',sans-serif;resize:none;line-height:1.6;min-height:96
   <div id="r-now" style="display:flex;flex-direction:column;gap:5px;margin-bottom:9px;"></div>
   <div style="height:0.5px;background:var(--bd);margin-bottom:9px;"></div>
   <div id="r-with" style="display:flex;flex-direction:column;gap:5px;margin-bottom:15px;"></div>
-  <div style="background:var(--card);border:0.5px solid var(--bd);border-radius:11px;padding:14px;text-align:center;">
-    <span class="lbl" style="color:var(--tx2);margin-bottom:6px;">Prochaine étape disponible</span>
-    <p style="font-size:11.5px;color:#9a9a9a;line-height:1.65;margin-bottom:12px;">Ton profil correspond aux critères. 30 minutes pour construire ton plan avec Anthony — créneaux limités.</p>
-    <button class="btn" onclick="openBooking()"><span>RÉSERVER MON APPEL</span></button>
+  <div style="background:rgba(92,184,116,0.09);border:0.5px solid rgba(92,184,116,0.3);border-radius:11px;padding:14px;text-align:center;">
+    <span class="lbl" style="color:#6cc486;margin-bottom:6px;">Prochaine étape disponible</span>
+    <p id="r-cta-txt" style="font-size:11.5px;color:#b0b0b0;line-height:1.65;margin-bottom:12px;">Ton profil correspond aux critères. 30 minutes pour construire ton plan avec Anthony — créneaux limités.</p>
+    <button class="btn" onclick="openBooking()" style="background:#5cb874;"><span style="color:#0a0a0a;">RÉSERVER MON APPEL</span></button>
   </div>
   <p style="text-align:center;margin-top:14px;" class="m"><span style="font-size:8px;color:#5a5a5a;letter-spacing:1.5px;">@anthoclt · THE IDENTITY</span></p>
 </div>
@@ -291,6 +291,7 @@ async function revealResult(){
     })});
   }catch(e){}
   document.getElementById('r-score').textContent=result.transformabilityScore;
+  const ctaEl=document.getElementById('r-cta-txt');if(ctaEl)ctaEl.textContent='Ton score de '+result.transformabilityScore+'/100 indique que ton profil est prêt pour un appel exclusif de 30 minutes avec Antho pour construire ton plan d'action — créneaux limités.';
   document.getElementById('r-name').textContent=result.profileName;
   document.getElementById('r-p1').textContent=result.paragraph1;
   document.getElementById('r-p2').textContent=result.paragraph2;
