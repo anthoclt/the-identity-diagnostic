@@ -291,7 +291,7 @@ async function revealResult(){
     })});
   }catch(e){}
   document.getElementById('r-score').textContent=result.transformabilityScore;
-  const ctaEl=document.getElementById('r-cta-txt');if(ctaEl)ctaEl.textContent='Ton score de '+result.transformabilityScore+'/100 indique que ton profil est prêt pour un appel exclusif de 30 minutes avec Antho pour construire ton plan d'action — créneaux limités.';
+  const ctaEl=document.getElementById('r-cta-txt');if(ctaEl)ctaEl.textContent="Ton score de "+result.transformabilityScore+"/100 indique que ton profil est prêt pour un appel exclusif de 30 minutes avec Antho pour construire ton plan d'action — créneaux limités.";
   document.getElementById('r-name').textContent=result.profileName;
   document.getElementById('r-p1').textContent=result.paragraph1;
   document.getElementById('r-p2').textContent=result.paragraph2;
