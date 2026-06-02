@@ -38,6 +38,8 @@ textarea{font-family:'Syne',sans-serif;resize:none;line-height:1.6;min-height:96
 .back:active{color:var(--tx2)}
 .err{color:var(--red);font-size:10.5px;margin:-8px 2px 14px;display:none;font-family:'Syne',sans-serif}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init("sRIfIXThffAexYfjW");</script>
 </head>
 <body>
 <div class="wrap">
@@ -284,11 +286,48 @@ async function revealResult(){
     if(data.content&&data.content[0]){result=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}
   }catch(e){}
   clearInterval(liv);
+  // Find key answers
+  const getAnswer = (keywords) => {
+    const q = answers.find(a => keywords.some(k => a.q.toLowerCase().includes(k)));
+    return q ? q.a : '';
+  };
+  const openAnswers = answers.filter((a,i) => questions[i] && questions[i].type === 'open').map(a => a.a);
+  const projet = openAnswers[0] || '';
+  const douleur = openAnswers[1] || '';
+  const budget = getAnswer(['accompagnement','investi','formation']);
+  const readiness = getAnswer(['accompagner concrètement','accompagner pour clarifier','prêt']);
+  const essaye = getAnswer(['essayé pour régler','essayé de changer']);
+
+  // Formspree enrichi
   try{
     await fetch(FORMSPREE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      instagram:ig,email:em,branche:branch,profil:result.profileName,score:result.transformabilityScore,urgence:result.urgenceLine,
-      reponses:answers.map(a=>a.q+' → '+a.a).join('\n\n')
+      instagram:ig,
+      email:em,
+      branche:branch,
+      '⭐ profil':result.profileName,
+      '⭐ score':result.transformabilityScore+'/100',
+      '⭐ projet_direction':projet,
+      '⭐ peur_douleur':douleur,
+      '⭐ budget_accompagnement':budget,
+      '⭐ readiness':readiness,
+      '⭐ ce_quil_a_essaye':essaye,
+      '— danger_block':result.dangerBlock,
+      '— urgence':result.urgenceLine,
+      '— trajectoire_sans':( result.trajectoryNow||[]).join(' / '),
+      '— trajectoire_avec':(result.trajectoryWith||[]).join(' / '),
+      '— detail_complet':answers.map(a=>a.q+' → '+a.a).join('\n\n')
     })});
+  }catch(e){}
+
+  // EmailJS au prospect
+  try{
+    await emailjs.send('service_r5xjx82','template_swtqvzi',{
+      email:em,
+      profile_name:result.profileName,
+      score:result.transformabilityScore,
+      urgence_line:result.urgenceLine,
+      booking_link:'https://appel-declic.short.gy/email'
+    });
   }catch(e){}
   document.getElementById('r-score').textContent=result.transformabilityScore;
   const ctaEl=document.getElementById('r-cta-txt');if(ctaEl)ctaEl.textContent="Ton score de "+result.transformabilityScore+"/100 indique que ton profil est prêt pour un appel exclusif de 30 minutes avec Antho pour construire ton plan d'action — créneaux limités.";
